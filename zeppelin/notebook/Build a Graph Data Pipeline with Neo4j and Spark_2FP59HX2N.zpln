@@ -1,0 +1,1490 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n# Nota bene\n\nBefore running this notebook please be sure that you ran [this one](/#/notebook/2FQE7PGXG)\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 19:42:03.373",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {},
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch1\u003eNota bene\u003c/h1\u003e\n\u003cp\u003eBefore running this notebook please be sure that you ran \u003ca href\u003d\"/#/notebook/2FQE7PGXG\"\u003ethis one\u003c/a\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602704507821_-1611666920",
+      "id": "paragraph_1602704507821_-1611666920",
+      "dateCreated": "2020-10-14 19:41:47.821",
+      "dateStarted": "2020-10-14 19:41:52.336",
+      "dateFinished": "2020-10-14 19:41:52.358",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Download the dataset into the file system",
+      "text": "import scala.collection.JavaConverters._\norg.apache.commons.io.FileUtils.writeLines(new java.io.File(\"/zeppelin/data/crimes.csv\"),\n    scala.io.Source.fromURL(\"https://data.cityofchicago.org/resource/6zsd-86xi.csv\").getLines.toList.asJava)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 20:02:30.203",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976263_-1909569428",
+      "id": "20180707-100041_373321372",
+      "dateCreated": "2020-10-14 10:22:56.263",
+      "dateStarted": "2020-10-14 20:02:30.222",
+      "dateFinished": "2020-10-14 20:02:41.004",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Read the dataset",
+      "text": "import org.apache.spark.sql.functions.{split, element_at}\nimport org.apache.spark.sql.SaveMode\nval crimeDF \u003d spark.read.format(\"csv\")\n    .option(\"header\",\"true\")\n    .load(\"/zeppelin/data/crimes.csv\")",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:11:27.462",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976263_-721679252",
+      "id": "20180707-100627_5456907",
+      "dateCreated": "2020-10-14 10:22:56.263",
+      "dateStarted": "2020-10-14 22:11:27.474",
+      "dateFinished": "2020-10-14 22:11:28.814",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Print the dataset\u0027s schema",
+      "text": "crimeDF.printSchema",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:11:32.453",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976263_-104088169",
+      "id": "20180707-121247_755957726",
+      "dateCreated": "2020-10-14 10:22:56.263",
+      "dateStarted": "2020-10-14 22:11:32.465",
+      "dateFinished": "2020-10-14 22:11:32.648",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Add new columns to the dataset",
+      "text": "val extendedCrimeDF \u003d crimeDF\n    .withColumn(\"day\", element_at(split(crimeDF(\"date\"), \"T\"), 1).cast(org.apache.spark.sql.types.DataTypes.DateType))\n    .withColumn(\"date\", crimeDF(\"date\").cast(org.apache.spark.sql.types.DataTypes.TimestampType))\n    .withColumn(\"point\", concat_ws(\", \", crimeDF(\"latitude\"), crimeDF(\"longitude\")))\nextendedCrimeDF.cache",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:12:03.031",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976263_1539118319",
+      "id": "20180708-151251_1184560545",
+      "dateCreated": "2020-10-14 10:22:56.263",
+      "dateStarted": "2020-10-14 22:12:03.044",
+      "dateFinished": "2020-10-14 22:12:03.401",
+      "status": "FINISHED"
+    },
+    {
+      "text": "extendedCrimeDF.printSchema",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:12:12.237",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602680262798_864729217",
+      "id": "paragraph_1602680262798_864729217",
+      "dateCreated": "2020-10-14 12:57:42.798",
+      "dateStarted": "2020-10-14 22:12:12.250",
+      "dateFinished": "2020-10-14 22:12:12.398",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Simple data exploration of our dataset as tabular data",
+      "text": "z.show(extendedCrimeDF)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:12:30.261",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "id": "string",
+                      "case_number": "string",
+                      "date": "string",
+                      "block": "string",
+                      "iucr": "string",
+                      "primary_type": "string",
+                      "description": "string",
+                      "location_description": "string",
+                      "arrest": "string",
+                      "domestic": "string",
+                      "beat": "string",
+                      "district": "string",
+                      "ward": "string",
+                      "community_area": "string",
+                      "fbi_code": "string",
+                      "x_coordinate": "string",
+                      "y_coordinate": "string",
+                      "year": "string",
+                      "updated_on": "string",
+                      "latitude": "string",
+                      "longitude": "string",
+                      "location": "string",
+                      "location_address": "string",
+                      "location_city": "string",
+                      "location_state": "string",
+                      "location_zip": "string",
+                      "day": "string",
+                      "point": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {}
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976263_-2012692005",
+      "id": "20180707-121512_253138728",
+      "dateCreated": "2020-10-14 10:22:56.263",
+      "dateStarted": "2020-10-14 22:12:30.275",
+      "dateFinished": "2020-10-14 22:12:31.445",
+      "status": "FINISHED"
+    },
+    {
+      "text": "extendedCrimeDF.count",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:12:58.638",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602680444004_759562650",
+      "id": "paragraph_1602680444004_759562650",
+      "dateCreated": "2020-10-14 13:00:44.004",
+      "dateStarted": "2020-10-14 22:12:58.650",
+      "dateFinished": "2020-10-14 22:12:58.990",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Create the Database crimes on Neo4j",
+      "text": "%neo4j\nCREATE DATABASE crimes",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:13:07.746",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "lineNumbers": false,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671161606_1071663354",
+      "id": "paragraph_1602671161606_1071663354",
+      "dateCreated": "2020-10-14 10:26:01.606",
+      "dateStarted": "2020-10-14 22:13:07.759",
+      "dateFinished": "2020-10-14 22:13:08.007",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n## Goal\n\nOur goal is transform this CSV into the follwing graph Structure:\n\n\u003cimg class\u003d\"img-responsive center-block\" src\u003d\"data:image/png;base64,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\" \u003e\n\nSo we\u0027ll create 4 nodes:\n\n* `Beat` (the police district)\n* `Crime`\n* `CrimeType` (the primary type)\n* `CrimeDay` (the day without the time)\n\nAnd 3 relationships between them.",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 21:06:14.673",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eGoal\u003c/h2\u003e\n\u003cp\u003eOur goal is transform this CSV into the follwing graph Structure:\u003c/p\u003e\n\u003cimg class\u003d\"img-responsive center-block\" src\u003d\"data:image/png;base64,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\" \u003e\n\u003cp\u003eSo we\u0026rsquo;ll create 4 nodes:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ccode\u003eBeat\u003c/code\u003e (the police district)\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eCrime\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eCrimeType\u003c/code\u003e (the primary type)\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eCrimeDay\u003c/code\u003e (the day without the time)\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eAnd 3 relationships between them.\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602709365613_-594856247",
+      "id": "paragraph_1602709365613_-594856247",
+      "dateCreated": "2020-10-14 21:02:45.613",
+      "dateStarted": "2020-10-14 21:06:09.927",
+      "dateFinished": "2020-10-14 21:06:09.959",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%neo4j_crimes\nCREATE CONSTRAINT beat_uk ON (b:Beat) ASSERT b.beat IS UNIQUE",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:14:03.350",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602673159359_1575387401",
+      "id": "paragraph_1602673159359_1575387401",
+      "dateCreated": "2020-10-14 10:59:19.359",
+      "dateStarted": "2020-10-14 22:14:03.365",
+      "dateFinished": "2020-10-14 22:14:05.888",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%neo4j_crimes\nCREATE CONSTRAINT crime_uk ON (c:Crime) ASSERT c.id IS UNIQUE",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:14:06.713",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602673213293_1813121155",
+      "id": "paragraph_1602673213293_1813121155",
+      "dateCreated": "2020-10-14 11:00:13.293",
+      "dateStarted": "2020-10-14 22:14:06.725",
+      "dateFinished": "2020-10-14 22:14:06.802",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%neo4j_crimes\nCREATE CONSTRAINT crimeDay_uk ON (cd:CrimeDay) ASSERT cd.day IS UNIQUE",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:14:08.635",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602673234425_-1133340691",
+      "id": "paragraph_1602673234425_-1133340691",
+      "dateCreated": "2020-10-14 11:00:34.425",
+      "dateStarted": "2020-10-14 22:14:08.646",
+      "dateFinished": "2020-10-14 22:14:08.716",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%neo4j_crimes\nMATCH (n) return count(n)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:14:10.763",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(n)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671288557_-215881958",
+      "id": "paragraph_1602671288557_-215881958",
+      "dateCreated": "2020-10-14 10:28:08.557",
+      "dateStarted": "2020-10-14 22:14:10.775",
+      "dateFinished": "2020-10-14 22:14:10.844",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert the Beat nodes",
+      "text": "extendedCrimeDF\n    .select(\"beat\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    // we don\u0027t want beat duplication\n    .mode(SaveMode.Overwrite)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", \"basic\")\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"labels\", \":Beat\")\n    .option(\"node.keys\", \"beat\")\n    .save\n    ",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:15:14.911",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671438830_569818968",
+      "id": "paragraph_1602671438830_569818968",
+      "dateCreated": "2020-10-14 10:30:38.830",
+      "dateStarted": "2020-10-14 22:14:54.850",
+      "dateFinished": "2020-10-14 22:14:56.125",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many Beat nodes have been created",
+      "text": "%neo4j_crimes\nMATCH (b:Beat) RETURN count(b)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 21:07:13.903",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(b)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602679409691_-1710769924",
+      "id": "paragraph_1602679409691_-1710769924",
+      "dateCreated": "2020-10-14 12:43:29.692",
+      "dateStarted": "2020-10-14 21:07:13.959",
+      "dateFinished": "2020-10-14 21:07:13.988",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert the Crime nodes",
+      "text": "extendedCrimeDF\n    .select(\"id\", \"description\", \"case_number\", \"point\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    // we don\u0027t care about duplication\n    .mode(SaveMode.ErrorIfExists)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"labels\", \":Crime\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:15:46.920",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671615514_678725246",
+      "id": "paragraph_1602671615514_678725246",
+      "dateCreated": "2020-10-14 10:33:35.515",
+      "dateStarted": "2020-10-14 22:15:46.945",
+      "dateFinished": "2020-10-14 22:15:48.102",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many Crime nodes have been created",
+      "text": "%neo4j_crimes\nMATCH (c:Crime) RETURN count(c)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:15:51.220",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(c)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602679502515_72955250",
+      "id": "paragraph_1602679502515_72955250",
+      "dateCreated": "2020-10-14 12:45:02.515",
+      "dateStarted": "2020-10-14 22:15:51.230",
+      "dateFinished": "2020-10-14 22:15:51.278",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert the CrimeType nodes",
+      "text": "extendedCrimeDF\n    .select(\"primary_type\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    .mode(SaveMode.Overwrite)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"labels\", \":CrimeType\")\n    .option(\"node.keys\", \"primary_type\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:06.267",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671651215_-1162277344",
+      "id": "paragraph_1602671651215_-1162277344",
+      "dateCreated": "2020-10-14 10:34:11.215",
+      "dateStarted": "2020-10-14 22:16:06.287",
+      "dateFinished": "2020-10-14 22:16:07.316",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many CrimeType nodes have been created",
+      "text": "%neo4j_crimes\nMATCH (ct:CrimeType) RETURN count(ct)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:09.678",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(ct)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602679585152_-1429495290",
+      "id": "paragraph_1602679585152_-1429495290",
+      "dateCreated": "2020-10-14 12:46:25.152",
+      "dateStarted": "2020-10-14 22:16:09.690",
+      "dateFinished": "2020-10-14 22:16:09.733",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert the CrimeDay nodes",
+      "text": "extendedCrimeDF\n    .select(\"day\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    .mode(SaveMode.Overwrite)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"labels\", \":CrimeDay\")\n    .option(\"node.keys\", \"day\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:17.840",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671679675_-1250669742",
+      "id": "paragraph_1602671679675_-1250669742",
+      "dateCreated": "2020-10-14 10:34:39.675",
+      "dateStarted": "2020-10-14 22:16:17.857",
+      "dateFinished": "2020-10-14 22:16:18.785",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many CrimeDay nodes have been created",
+      "text": "%neo4j_crimes\nMATCH (cd:CrimeDay) RETURN count(cd)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:21.347",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(cd)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602680655584_490608091",
+      "id": "paragraph_1602680655584_490608091",
+      "dateCreated": "2020-10-14 13:04:15.584",
+      "dateStarted": "2020-10-14 22:16:21.362",
+      "dateFinished": "2020-10-14 22:16:21.423",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert (:Beat)-[:ON_BEAT]-\u003e(:Crime) paths",
+      "text": "extendedCrimeDF\n    .select(\"beat\", \"id\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    .mode(SaveMode.Append)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"relationship\", \"ON_BEAT\")\n    .option(\"relationship.save.strategy\", \"keys\")\n    .option(\"relationship.source.save.mode\", \"match\")\n    .option(\"relationship.source.labels\", \":Beat\")\n    .option(\"relationship.source.node.keys\", \"beat\")\n    .option(\"relationship.target.save.mode\", \"match\")\n    .option(\"relationship.target.labels\", \":Crime\")\n    .option(\"relationship.target.node.keys\", \"id\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:33.035",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602671740727_-297501134",
+      "id": "paragraph_1602671740727_-297501134",
+      "dateCreated": "2020-10-14 10:35:40.727",
+      "dateStarted": "2020-10-14 22:16:33.047",
+      "dateFinished": "2020-10-14 22:16:34.172",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many (:Beat)-[:ON_BEAT]-\u003e(:Crime) paths have been created",
+      "text": "%neo4j_crimes\nMATCH p \u003d (:Beat)-[:ON_BEAT]-\u003e(:Crime)\nRETURN count(p)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:44.617",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(p)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602680815557_-64599104",
+      "id": "paragraph_1602680815557_-64599104",
+      "dateCreated": "2020-10-14 13:06:55.558",
+      "dateStarted": "2020-10-14 22:16:44.628",
+      "dateFinished": "2020-10-14 22:16:44.752",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert (:Crime)-[:IS_TYPE]-\u003e(:CrimeType) paths",
+      "text": "extendedCrimeDF\n    .select(\"primary_type\", \"id\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    .mode(SaveMode.Append)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"relationship\", \"IS_TYPE\")\n    .option(\"relationship.save.strategy\", \"keys\")\n    .option(\"relationship.source.save.mode\", \"match\")\n    .option(\"relationship.source.labels\", \":Crime\")\n    .option(\"relationship.source.node.keys\", \"id\")\n    .option(\"relationship.target.save.mode\", \"match\")\n    .option(\"relationship.target.labels\", \":CrimeType\")\n    .option(\"relationship.target.node.keys\", \"primary_type\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:16:56.790",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602672152541_-1840767761",
+      "id": "paragraph_1602672152541_-1840767761",
+      "dateCreated": "2020-10-14 10:42:32.541",
+      "dateStarted": "2020-10-14 22:16:56.801",
+      "dateFinished": "2020-10-14 22:16:57.856",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many (:Crime)-[:IS_TYPE]-\u003e(:CrimeType) paths have been created",
+      "text": "%neo4j_crimes\nMATCH p \u003d (:Crime)-[:IS_TYPE]-\u003e(:CrimeType)\nRETURN count(p)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:17:00.113",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(p)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602680969692_1593383010",
+      "id": "paragraph_1602680969692_1593383010",
+      "dateCreated": "2020-10-14 13:09:29.692",
+      "dateStarted": "2020-10-14 22:17:00.125",
+      "dateFinished": "2020-10-14 22:17:00.194",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Insert (:Crime)-[:ON_DATE]-\u003e(:CrimeDay) paths",
+      "text": "extendedCrimeDF\n    .select(\"day\", \"id\", \"date\")\n    .write.format(\"org.neo4j.spark.DataSource\")\n    .mode(SaveMode.Overwrite)\n    .option(\"database\", \"crimes\")\n    .option(\"url\", z.get(\"neo4j_url\").toString)\n    .option(\"authentication.type\", z.get(\"auth_type\").toString)\n    .option(\"authentication.basic.username\", z.get(\"neo4j_user\").toString)\n    .option(\"authentication.basic.password\", z.get(\"neo4j_pass\").toString)\n    .option(\"relationship\", \"ON_DATE\")\n    .option(\"relationship.source.save.mode\", \"match\")\n    .option(\"relationship.target.save.mode\", \"match\")\n    .option(\"relationship.save.strategy\", \"keys\")\n    .option(\"relationship.source.labels\", \":Crime\")\n    .option(\"relationship.source.node.keys\", \"id\")\n    .option(\"relationship.target.labels\", \":CrimeDay\")\n    .option(\"relationship.target.node.keys\", \"day\")\n    // we define the date as relationship property\n    .option(\"relationship.properties\", \"date\")\n    .save",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:17:49.851",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602672210633_-609167388",
+      "id": "paragraph_1602672210633_-609167388",
+      "dateCreated": "2020-10-14 10:43:30.633",
+      "dateStarted": "2020-10-14 22:17:04.262",
+      "dateFinished": "2020-10-14 22:17:05.633",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check how many (:Crime)-[:ON_DATE]-\u003e(:CrimeDay) paths have been created",
+      "text": "%neo4j_crimes\nMATCH p \u003d (:Crime)-[:ON_DATE]-\u003e(:CrimeDay)\nRETURN count(p)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:17:09.550",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "count(p)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602681074771_-2117600616",
+      "id": "paragraph_1602681074771_-2117600616",
+      "dateCreated": "2020-10-14 13:11:14.771",
+      "dateStarted": "2020-10-14 22:17:09.561",
+      "dateFinished": "2020-10-14 22:17:09.624",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Check if the date properties were managed correctly",
+      "text": "%neo4j_crimes\nMATCH p \u003d (c:Crime)-[on_date:ON_DATE]-\u003e(cd:CrimeDay)\nRETURN DISTINCT apoc.meta.type(cd.day) AS day_type, apoc.meta.type(on_date.date) AS date_type",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:17:13.246",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "day_type": "string",
+                      "date_type": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "day_type\tdate_type\n\"LocalDate\"\t\"ZonedDateTime\"\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602695702313_1937827989",
+      "id": "paragraph_1602695702313_1937827989",
+      "dateCreated": "2020-10-14 17:15:02.313",
+      "dateStarted": "2020-10-14 22:17:13.260",
+      "dateFinished": "2020-10-14 22:17:13.420",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Let\u0027s query the graph directly from Neo4j!",
+      "text": "%neo4j_crimes\nMATCH (crime:Crime)-[is:IS_TYPE]-\u003e(type:CrimeType),\n    (crime)-[on:ON_DATE]-\u003e(date:CrimeDay)\nRETURN crime, is, type, on, date\nlimit 10",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 22:18:11.726",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "network",
+              "height": 408.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "id": "string",
+                      "label": "string",
+                      "primary_type": "string",
+                      "latitude": "string",
+                      "description": "string",
+                      "case_number": "string",
+                      "longitude": "string",
+                      "date": "string",
+                      "parsed_date": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "pieChart": {},
+                "network": {
+                  "properties": {
+                    "CrimeType": {
+                      "selected": "primary_type",
+                      "keys": [
+                        "primary_type",
+                        "id",
+                        "label"
+                      ]
+                    },
+                    "Crime": {
+                      "selected": "case_number",
+                      "keys": [
+                        "description",
+                        "case_number",
+                        "id",
+                        "label"
+                      ]
+                    },
+                    "CrimeDate": {
+                      "selected": "parsed_date",
+                      "keys": [
+                        "parsed_date",
+                        "id",
+                        "label"
+                      ]
+                    }
+                  },
+                  "d3Graph": {
+                    "forceLayout": {
+                      "timeout": 10000.0,
+                      "charge": -120.0,
+                      "linkDistance": 80.0
+                    },
+                    "zoom": {
+                      "minScale": 1.3
+                    }
+                  }
+                },
+                "volume-leaflet": {
+                  "coordinates": {
+                    "name": "point",
+                    "index": 4.0,
+                    "aggr": "sum"
+                  },
+                  "tooltip": {
+                    "name": "primary_type",
+                    "index": 5.0,
+                    "aggr": "sum"
+                  },
+                  "popup": {
+                    "name": "description",
+                    "index": 2.0,
+                    "aggr": "sum"
+                  }
+                }
+              },
+              "keys": [
+                {
+                  "name": "label",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "label",
+                  "index": 1.0,
+                  "aggr": "count"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "NETWORK",
+            "data": "{\"nodes\":[{\"id\":550,\"data\":{\"description\":\"POSSESS - SYNTHETIC DRUGS\",\"case_number\":\"JD390591\",\"id\":\"12185778\",\"point\":\"41.769841403, -87.676096874\"},\"label\":\"Crime\"},{\"id\":1257,\"data\":{\"primary_type\":\"BATTERY\"},\"label\":\"CrimeType\"},{\"id\":458,\"data\":{\"description\":\"OVER $500\",\"case_number\":\"JD391739\",\"id\":\"12186824\",\"point\":\"41.889016567, -87.650193151\"},\"label\":\"Crime\"},{\"id\":362,\"data\":{\"description\":\"POSSESS - SYNTHETIC DRUGS\",\"case_number\":\"JD391122\",\"id\":\"12186233\",\"point\":\"41.741517352, -87.5757894\"},\"label\":\"Crime\"},{\"id\":1259,\"data\":{\"primary_type\":\"CRIMINAL DAMAGE\"},\"label\":\"CrimeType\"},{\"id\":587,\"data\":{\"description\":\"BY FIRE\",\"case_number\":\"JD390483\",\"id\":\"12185673\",\"point\":\"41.71383404, -87.627273814\"},\"label\":\"Crime\"},{\"id\":1261,\"data\":{\"primary_type\":\"THEFT\"},\"label\":\"CrimeType\"},{\"id\":717,\"data\":{\"description\":\"FINANCIAL IDENTITY THEFT OVER $ 300\",\"case_number\":\"JD390818\",\"id\":\"12185976\",\"point\":\"41.97457394, -87.654961348\"},\"label\":\"Crime\"},{\"id\":1265,\"data\":{\"primary_type\":\"BURGLARY\"},\"label\":\"CrimeType\"},{\"id\":1266,\"data\":{\"primary_type\":\"DECEPTIVE PRACTICE\"},\"label\":\"CrimeType\"},{\"id\":500,\"data\":{\"description\":\"UNLAWFUL ENTRY\",\"case_number\":\"JD390770\",\"id\":\"12186377\",\"point\":\"41.801084188, -87.624251966\"},\"label\":\"Crime\"},{\"id\":597,\"data\":{\"description\":\"DOMESTIC BATTERY SIMPLE\",\"case_number\":\"JD390489\",\"id\":\"12185710\",\"point\":\"41.737209609, -87.658238234\"},\"label\":\"Crime\"},{\"id\":1269,\"data\":{\"primary_type\":\"NARCOTICS\"},\"label\":\"CrimeType\"},{\"id\":502,\"data\":{\"description\":\"CREDIT CARD FRAUD\",\"case_number\":\"JD391599\",\"id\":\"12186688\",\"point\":\"41.908251574, -87.770720815\"},\"label\":\"Crime\"},{\"id\":407,\"data\":{\"description\":\"AGGRAVATED - OTHER DANGEROUS WEAPON\",\"case_number\":\"JD391005\",\"id\":\"12186222\",\"point\":\"41.852257562, -87.670364742\"},\"label\":\"Crime\"},{\"id\":1276,\"data\":{\"primary_type\":\"ARSON\"},\"label\":\"CrimeType\"},{\"id\":1278,\"data\":{\"day\":{\"year\":2020,\"month\":10,\"day\":6}},\"label\":\"CrimeDay\"},{\"id\":350,\"data\":{\"description\":\"TO PROPERTY\",\"case_number\":\"JD391057\",\"id\":\"12186193\",\"point\":\"41.876859239, -87.633277668\"},\"label\":\"Crime\"}],\"edges\":[{\"source\":500,\"target\":1278,\"id\":2244,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":16,\"minute\":5,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":597,\"target\":1278,\"id\":2341,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":12,\"minute\":0,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":350,\"target\":1259,\"id\":1094,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":502,\"target\":1278,\"id\":2246,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":16,\"minute\":0,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":407,\"target\":1278,\"id\":2151,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":19,\"minute\":20,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":350,\"target\":1278,\"id\":2094,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":21,\"minute\":1,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":550,\"target\":1269,\"id\":1294,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":458,\"target\":1261,\"id\":1202,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":362,\"target\":1269,\"id\":1106,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":587,\"target\":1276,\"id\":1331,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":717,\"target\":1266,\"id\":1461,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":550,\"target\":1278,\"id\":2294,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":13,\"minute\":52,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":458,\"target\":1278,\"id\":2202,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":17,\"minute\":40,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":362,\"target\":1278,\"id\":2106,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":20,\"minute\":36,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":587,\"target\":1278,\"id\":2331,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":12,\"minute\":13,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":500,\"target\":1265,\"id\":1244,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":597,\"target\":1257,\"id\":1341,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":717,\"target\":1278,\"id\":2461,\"data\":{\"date\":{\"dateTime\":{\"date\":{\"year\":2020,\"month\":10,\"day\":6},\"time\":{\"hour\":6,\"minute\":0,\"second\":0,\"nano\":0}},\"offset\":{\"totalSeconds\":0},\"zone\":{\"totalSeconds\":0}}},\"label\":\"ON_DATE\"},{\"source\":502,\"target\":1266,\"id\":1246,\"data\":{},\"label\":\"IS_TYPE\"},{\"source\":407,\"target\":1257,\"id\":1151,\"data\":{},\"label\":\"IS_TYPE\"}],\"labels\":{\"Beat\":\"#9A6090\",\"Crime\":\"#AC7BBF\",\"CrimeDay\":\"#7AC491\",\"CrimeType\":\"#40C9E1\"},\"types\":[\"IS_TYPE\",\"ON_BEAT\",\"ON_DATE\"],\"directed\":true}"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976264_315732827",
+      "id": "20180707-123200_2053990595",
+      "dateCreated": "2020-10-14 10:22:56.264",
+      "dateStarted": "2020-10-14 22:18:11.740",
+      "dateFinished": "2020-10-14 22:18:11.981",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%neo4j\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 10:22:56.265",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602670976265_-2012254941",
+      "id": "20180709-163807_900340418",
+      "dateCreated": "2020-10-14 10:22:56.265",
+      "status": "READY"
+    }
+  ],
+  "name": "Build a Graph Data Pipeline with Neo4j and Spark",
+  "id": "2FP59HX2N",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-preview1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

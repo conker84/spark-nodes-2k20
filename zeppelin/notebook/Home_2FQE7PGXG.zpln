@@ -1,0 +1,197 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n# Create a Graph Data Pipeline with Apache Spark and Neo4j\n\n\n\u003cdiv class\u003d\"row\"\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003cdiv class\u003d\"row text-center\"\u003e\n      \u003cdiv class\u003d\"col-xs-8 col-sm-6\"\u003e\n        \u003ca href\u003d\"https://twitter.com/santand84\" target\u003d\"_blank\"\u003e\u003cimg alt\u003d\"Andrea Santurbano\" src\u003d\"https://d5ln38p3754yc.cloudfront.net/agenda_items_images/2493/medium/1599095473-0e063e42596fe90b.jpg?1599095473\" width\u003d\"100px\" class\u003d\"img-circle center-block\"\u003eAndrea Santurbano\u003c/a\u003e CTO, LARUS Business Automation\n      \u003c/div\u003e\n      \u003cdiv class\u003d\"col-xs-4 col-sm-6\"\u003e\n        \u003ca href\u003d\"https://twitter.com/mdavidallen\" target\u003d\"_blank\"\u003e\u003cimg alt\u003d\"M. David Allen\"src\u003d\"https://d5ln38p3754yc.cloudfront.net/agenda_items_images/2494/medium/1599095544-a57b2ab2ce999d99.jpg?1599095544\" width\u003d\"100px\" class\u003d\"img-circle center-block\"\u003eM. David Allen\u003c/a\u003e Technology Partner Architect, Neo4j\n      \u003c/div\u003e\n    \u003c/div\u003e\n  \u003c/div\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003cbr/\u003eThis Zeppelin instance contains the demos for the speech \u003cb\u003eCreate a Graph Data Pipeline with Apache Spark and Neo4j\u003c/b\u003e at \u003ca href\u003d\"https://neo4j.com/nodes-2020/agenda/\" target\u003d\"_blank\"\u003eNODES 2020\u003c/a\u003e, allowing you to use them with \u003cb\u003ejust one simple click on the play button \u003cspan class\u003d\"icon-control-play\"\u003e\u003c/span\u003e\u003c/b\u003e\n  \u003c/div\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003ch3\u003eAbstract\u003c/h3\u003e\n    \u003ci\u003eRegardless of the fact you\u0027re a Data Scientist or a Data Engineer, at 99%, you have met in some way with Apache Spark. In this session, we’ll show you the capabilities we’ve been working on discovering how you can combine Spark and Neo4j for reading and ingesting data from/to Neo4j leveraging several Programming Languages (such as Scala and Python) via Notebooks; showing some simple use case that will allow you building a Graph Data Pipeline from scratch.\u003c/i\u003e\n  \u003c/div\u003e\n\u003c/div\u003e\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 19:39:32.029",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch1\u003eCreate a Graph Data Pipeline with Apache Spark and Neo4j\u003c/h1\u003e\n\u003cdiv class\u003d\"row\"\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003cdiv class\u003d\"row text-center\"\u003e\n      \u003cdiv class\u003d\"col-xs-8 col-sm-6\"\u003e\n        \u003ca href\u003d\"https://twitter.com/santand84\" target\u003d\"_blank\"\u003e\u003cimg alt\u003d\"Andrea Santurbano\" src\u003d\"https://d5ln38p3754yc.cloudfront.net/agenda_items_images/2493/medium/1599095473-0e063e42596fe90b.jpg?1599095473\" width\u003d\"100px\" class\u003d\"img-circle center-block\"\u003eAndrea Santurbano\u003c/a\u003e CTO, LARUS Business Automation\n      \u003c/div\u003e\n      \u003cdiv class\u003d\"col-xs-4 col-sm-6\"\u003e\n        \u003ca href\u003d\"https://twitter.com/mdavidallen\" target\u003d\"_blank\"\u003e\u003cimg alt\u003d\"M. David Allen\"src\u003d\"https://d5ln38p3754yc.cloudfront.net/agenda_items_images/2494/medium/1599095544-a57b2ab2ce999d99.jpg?1599095544\" width\u003d\"100px\" class\u003d\"img-circle center-block\"\u003eM. David Allen\u003c/a\u003e Technology Partner Architect, Neo4j\n      \u003c/div\u003e\n    \u003c/div\u003e\n  \u003c/div\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003cbr/\u003eThis Zeppelin instance contains the demos for the speech \u003cb\u003eCreate a Graph Data Pipeline with Apache Spark and Neo4j\u003c/b\u003e at \u003ca href\u003d\"https://neo4j.com/nodes-2020/agenda/\" target\u003d\"_blank\"\u003eNODES 2020\u003c/a\u003e, allowing you to use them with \u003cb\u003ejust one simple click on the play button \u003cspan class\u003d\"icon-control-play\"\u003e\u003c/span\u003e\u003c/b\u003e\n  \u003c/div\u003e\n  \u003cdiv class\u003d\"col-sm-12\"\u003e\n    \u003ch3\u003eAbstract\u003c/h3\u003e\n    \u003ci\u003eRegardless of the fact you\u0027re a Data Scientist or a Data Engineer, at 99%, you have met in some way with Apache Spark. In this session, we’ll show you the capabilities we’ve been working on discovering how you can combine Spark and Neo4j for reading and ingesting data from/to Neo4j leveraging several Programming Languages (such as Scala and Python) via Notebooks; showing some simple use case that will allow you building a Graph Data Pipeline from scratch.\u003c/i\u003e\n  \u003c/div\u003e\n\u003c/div\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602696074017_-1234061364",
+      "id": "20200127-163303_873781517",
+      "dateCreated": "2020-10-14 17:21:14.018",
+      "dateStarted": "2020-10-14 17:33:17.917",
+      "dateFinished": "2020-10-14 17:33:17.931",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n## Neo4j Global Configuration\n\nPlease be sure to add the correct parameter and once done please type enter into one of the following input fields",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 19:02:29.857",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 67.1875,
+              "optionOpen": false
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eNeo4j Global Configuration\u003c/h2\u003e\n\u003cp\u003ePlease be sure to add the correct parameter and once done please type enter into one of the following input fields\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602696760532_-17124825",
+      "id": "paragraph_1602696760532_-17124825",
+      "dateCreated": "2020-10-14 17:32:40.532",
+      "dateStarted": "2020-10-14 19:02:23.451",
+      "dateFinished": "2020-10-14 19:02:24.977",
+      "status": "FINISHED"
+    },
+    {
+      "text": "z.put(\"neo4j_url\", z.input(\"Neo4j Url\", \"bolt://neo4j:7687\").toString)\nz.put(\"neo4j_user\", z.input(\"Neo4j Username\", \"neo4j\").toString)\nz.put(\"neo4j_pass\", z.input(\"Neo4j Password\", \"zeppelin\").toString)\nz.put(\"auth_type\", \"basic\")",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 21:47:47.669",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {
+          "Neo4j Url": "bolt://neo4j:7687",
+          "Neo4j Username": "neo4j",
+          "Neo4j Password": "zeppelin"
+        },
+        "forms": {
+          "Neo4j Url": {
+            "type": "TextBox",
+            "name": "Neo4j Url",
+            "displayName": "Neo4j Url",
+            "defaultValue": "bolt://neo4j:7687",
+            "hidden": false
+          },
+          "Neo4j Username": {
+            "type": "TextBox",
+            "name": "Neo4j Username",
+            "displayName": "Neo4j Username",
+            "defaultValue": "neo4j",
+            "hidden": false
+          },
+          "Neo4j Password": {
+            "type": "TextBox",
+            "name": "Neo4j Password",
+            "displayName": "Neo4j Password",
+            "defaultValue": "zeppelin",
+            "hidden": false
+          }
+        }
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[33mwarning: \u001b[0mthere were three deprecation warnings; re-run with -deprecation for details\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602696074018_-1651103606",
+      "id": "20200127-234514_674589954",
+      "dateCreated": "2020-10-14 17:21:14.018",
+      "dateStarted": "2020-10-14 21:47:47.686",
+      "dateFinished": "2020-10-14 21:47:48.010",
+      "status": "FINISHED"
+    },
+    {
+      "text": "",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-14 19:39:05.732",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602696813112_935875786",
+      "id": "paragraph_1602696813112_935875786",
+      "dateCreated": "2020-10-14 17:33:33.112",
+      "status": "READY"
+    }
+  ],
+  "name": "Home",
+  "id": "2FQE7PGXG",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-preview1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
